@@ -111,7 +111,7 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={{ margin: 30 }}>{this.state.PostsList.email}1</Text>
+          <Text style={{ margin: 30 }}>{this.state.PostsList.email}</Text>
           <Text style={styles.headerTitle}>News Feed</Text>
         </View>
 
