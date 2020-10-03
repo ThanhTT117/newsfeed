@@ -56,6 +56,7 @@ export default class PostScreen extends React.Component {
       .catch((error) => {
         alert(error);
       });
+    this.props.navigation.navigate("Home");
   };
 
   pickImage = async () => {
@@ -73,7 +74,9 @@ export default class PostScreen extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate("Home")}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("Home")}
+          >
             <Ionicons name="md-arrow-back" size={50} color="#D8D9DB"></Ionicons>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.handlePost}>

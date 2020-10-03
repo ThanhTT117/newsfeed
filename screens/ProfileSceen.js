@@ -1,19 +1,11 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  StatusBar,
-  LayoutAnimation,
-} from "react-native";
+import { View, Text, StyleSheet, Button, Image } from "react-native";
 import * as firebase from "firebase";
 
 export default class HomeScreen extends React.Component {
   state = {
     email: "",
-    displayName: ""
+    displayName: "",
   };
 
   componentDidMount() {
@@ -28,10 +20,31 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text> Hi, {this.state.displayName} ! </Text>
-        <TouchableOpacity style={{ marginTop: 32 }} onPress={this.signOutUser}>
-          <Text>PROFILE</Text>
-        </TouchableOpacity>
+        <View style={{ marginTop: 64, alignItems: "center" }}>
+          <View style={styles.avatarContainer}>
+            <Image
+              source={require("../assets/avatar.jpg")}
+              style={styles.avatar}
+            />
+          </View>
+          <Text style={styles.name}>{this.state.displayName}</Text>
+        </View>
+        <View style={styles.statsContainer}>
+          <View style={styles.stat}>
+            <Text style={styles.statAmount}>21</Text>
+            <Text style={styles.statTitle}>Posts</Text>
+          </View>
+          <View style={styles.stat}>
+            <Text style={styles.statAmount}>981</Text>
+            <Text style={styles.statTitle}>Followers</Text>
+          </View>
+          <View style={styles.stat}>
+            <Text style={styles.statAmount}>63</Text>
+            <Text style={styles.statTitle}>Following</Text>
+          </View>
+        </View>
+
+        <Button onPress={this.signOutUser} title="Log out" />
       </View>
     );
   }
@@ -40,7 +53,44 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+  },
+  profile: {
+    marginTop: 64,
     alignItems: "center",
+  },
+  avatarContainer: {
+    shadowColor: "#151734",
+    shadowRadius: 30,
+    shadowOpacity: 0.4,
+  },
+  avatar: {
+    width: 136,
+    height: 136,
+    borderRadius: 68,
+  },
+  name: {
+    marginTop: 24,
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    margin: 32,
+  },
+  stat: {
+    alignItems: "center",
+    flex: 1,
+  },
+  statAmount: {
+    color: "#4F566D",
+    fontSize: 18,
+    fontWeight: "300",
+  },
+  statTitle: {
+    color: "#C3C5CD",
+    fontSize: 12,
+    fontWeight: "500",
+    marginTop: 4,
   },
 });
