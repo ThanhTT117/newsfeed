@@ -18,3 +18,5 @@ npm install expo-constants expo-permissions
 npm install expo-image-picker
 
 npm install firebase@7.9.0
+
+npm install moment --save
