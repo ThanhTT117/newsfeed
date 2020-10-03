@@ -1,69 +1,46 @@
-import React, { useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  StatusBar,
-  LayoutAnimation,
-} from "react-native";
+import React from "react";
+import { View, Text, StyleSheet, FlatList, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as firebase from "firebase";
-import Fire from "../Fire";
-import "@firebase/firestore";
-import FirebaseKey from "../Config";
 
-const posts = [
-  {
-    id: "1",
-    displayName: "Joe",
-    text: "Hello JOEEEE",
-    timestamp: 1569109273726,
-    avatar: require("../assets/avatar.jpg"),
-    image: require("../assets/avatar.jpg"),
-  },
-  {
-    id: "2",
-    displayName: "Jo1111e",
-    text: "Hello JOEEE12123123213213E",
-    timestamp: 1569109273727,
-    avatar: require("../assets/avatar.jpg"),
-    image: require("../assets/avatar.jpg"),
-  },
-  {
-    id: "3",
-    displayName: "22222222",
-    text: "Hello JOEEE1232TTTTTTTTTTTTTTT2123123213213E",
-    timestamp: 1569109273728,
-    avatar: require("../assets/avatar.jpg"),
-    image: require("../assets/avatar.jpg"),
-  },
-];
+import "@firebase/firestore";
+import moment from "moment";
 
 export default class HomeScreen extends React.Component {
-  state = {
-    PostsList: [],
-    displayName: "",
-    loading: false,
-  };
-
-  componentDidMount() {
-    this.getPost();
+  constructor() {
+    super();
+    this.ref = firebase.firestore().collection("posts");
+    this.unsubscribe = null;
+    this.state = {
+      posts: [],
+      loading: true,
+    };
   }
 
-  getPost = async () => {
-    firebase
-      .firestore()
-      .collection("posts")
-      .onSnapshot((doc) => {
-        let list = [];
-        doc.forEach((doc) => {
-          list.push(doc.data());
-        });
-        this.setState({ PostsList: list });
+  componentDidMount() {
+    this.unsubscribe = this.ref.onSnapshot(this.getPost);
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  getPost = (querySnapshot) => {
+    const posts = [];
+    querySnapshot.forEach((doc) => {
+      const { displayName, image, text, timestamp } = doc.data();
+      posts.push({
+        key: doc.id, // Document ID
+        displayName, // DocumentSnapshot
+        image,
+        text,
+        timestamp,
       });
+    });
+    this.setState({
+      posts,
+      loading: false,
+    });
   };
 
   renderPost = (posts) => {
@@ -80,13 +57,15 @@ export default class HomeScreen extends React.Component {
           >
             <View>
               <Text style={styles.name}>{posts.displayName}</Text>
-              <Text style={styles.timestamp}>{posts.timestamp}</Text>
+              <Text style={styles.timestamp}>
+                {moment(posts.timestamp).fromNow()}
+              </Text>
             </View>
             <Ionicons name="ios-more" size={24} color="#73788B" />
           </View>
           <Text style={styles.posts}>{posts.text}</Text>
           <Image
-            source={posts.image}
+            source={{ uri: posts.image }}
             style={styles.postImage}
             resizeMode="cover"
           ></Image>
@@ -111,15 +90,14 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={{ margin: 30 }}>{this.state.PostsList.email}</Text>
           <Text style={styles.headerTitle}>News Feed</Text>
         </View>
 
         <FlatList
           style={styles.feed}
-          data={posts}
+          data={this.state.posts}
           renderItem={({ item }) => this.renderPost(item)}
-          // keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
         />
       </View>
